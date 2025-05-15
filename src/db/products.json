@@ -1,0 +1,21 @@
+[
+    {
+      "name": "Apple iPhone 14",
+      "price": 999,
+      "category": "electronics",
+      "description": "Newest iPhone with A15 Bionic chip"
+    },
+    {
+      "name": "T-Shirt GoIT",
+      "price": 25,
+      "category": "clothing",
+      "description": "Soft cotton T-shirt with GoIT logo"
+    },
+    {
+      "name": "JavaScript for Beginners",
+      "price": 15,
+      "category": "books",
+      "description": "Learn JavaScript from scratch"
+    }
+  ]
+  
