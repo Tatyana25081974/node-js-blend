@@ -66,7 +66,7 @@ export const updateProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res, next) => {
   const { productId } = req.params;
-
+  
   const product = await deleteProduct(productId);
 
   if (!product) {
