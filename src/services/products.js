@@ -35,3 +35,10 @@ export const updateProductService = async (productId, updateData) => {
 
   return updatedProduct;
 };
+
+
+
+export const deleteProduct = async (productId) => {
+  const product = await Product.findOneAndDelete({ _id: productId });
+  return product; // якщо null — контролер сам обробить
+};

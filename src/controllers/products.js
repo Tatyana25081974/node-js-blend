@@ -1,5 +1,5 @@
-import { getAllProducts, getProductById, createProduct, updateProductService } from '../services/products.js';
-
+import { getAllProducts, getProductById, createProduct, updateProductService, deleteProduct } from '../services/products.js';
+import createHttpError from 'http-errors';
 export const getProductsController = async (req, res, next) => {
   try {
     const products = await getAllProducts();
@@ -62,4 +62,17 @@ export const updateProductController = async (req, res) => {
     message: "Successfully patched a product!",
     data: updatedProduct,
   });
+};
+
+export const deleteProductController = async (req, res, next) => {
+  const { productId } = req.params;
+
+  const product = await deleteProduct(productId);
+
+  if (!product) {
+    next(createHttpError(404, 'Product not found'));
+    return;
+  }
+
+  res.status(204).send(); // OK, без тіла відповіді
 };
