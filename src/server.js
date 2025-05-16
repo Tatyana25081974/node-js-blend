@@ -28,6 +28,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/products', productsRouter);
+
+
+
 app.use(notFoundHandler);
 app.use(errorHandler); // має бути останнім!
 
