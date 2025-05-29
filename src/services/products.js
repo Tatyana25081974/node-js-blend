@@ -1,11 +1,39 @@
 import createHttpError from 'http-errors'; //для створення помилок
 import { Product } from '../db/models/productModel.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { SORT_ORDER } from '../constants/index.js';
 
 
-export async function getAllProducts() {
-  const products = await Product.find();
-  return products;
-}
+
+export const getAllProducts = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+  filter = {},
+}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  const productsQuery = Product.find(); // пошук всіх продуктів
+
+  const totalItems = await Product.find() //
+    .merge(productsQuery) // метод копіює фільтри з productsQuery у поточний запит.
+    .countDocuments(); //Рахує, скільки документів знайдено, враховуючи фільтри.
+
+  const products = await productsQuery
+  .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+
+  const paginationData = calculatePaginationData(totalItems, perPage, page);
+
+  return {
+    data: products,
+    ...paginationData,
+  };
+};
 
 export const getProductById = async (productId) => {
   const product = await Product.findById(productId); //пошук продукту за id
