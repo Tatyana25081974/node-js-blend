@@ -5,9 +5,11 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createProductSchema } from '../validation/products.js';
 import { updatedProductSchema } from '../validation/products.js'; 
 import { isValidId } from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
+router.use(authenticate);
 router.get('/', ctrlWrapper(getProductsController));
 router.get('/:productId', isValidId,ctrlWrapper(getProductByIdController)); // GET /products/:productId
 router.post('/', validateBody(createProductSchema), ctrlWrapper(createProductController)); // ← новий POST роут

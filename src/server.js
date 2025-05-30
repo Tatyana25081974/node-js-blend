@@ -1,44 +1,49 @@
+// src/server.js
+
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino-http'; //логер, який виводить інформацію про запити (наприклад: метод, шлях, час).
+import pino from 'pino-http'; // логер запитів
+import cookieParser from 'cookie-parser'; // для роботи з куками
 
-
-import productsRouter from './routers/products.js';
+import router from './routers/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
+// 🔁 Створюємо функцію запуску сервера
+export const startServer = () => {
+  const app = express();
 
+  // 📦 Middleware
+  app.use(express.json()); // для роботи з JSON
+  app.use(cors()); // дозвіл на запити з інших доменів
+  app.use(cookieParser()); // дозволяє читати та записувати куки
 
-const app = express();
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
 
-
-app.use(express.json()); //дозволяє обробляти JSON-дані з запитів та відповідями 
-app.use(cors()); //Додає заголовки, щоб дозволити доступ з інших сайтів (наприклад, з фронтенду).
-app.use(
-  pino({
-    transport: {
-      target: 'pino-pretty',
-    },
-  }),
-);
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Hello world!',
+  // 👋 Тестовий маршрут
+  app.get('/', (req, res) => {
+    res.json({ message: 'Hello world!' });
   });
-});
 
-app.use('/products', productsRouter);
+  // 🌐 Основний роутер
+  app.use(router);
 
+  // 🧭 Обробники помилок
+  app.use(notFoundHandler);
+  app.use(errorHandler); // завжди останній
 
+  // 🚀 Запуск сервера
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+  });
+};
 
-app.use(notFoundHandler);
-app.use(errorHandler); // має бути останнім!
-
-// 5. Отримуємо порт зі змінної оточення або 3000
-const PORT = process.env.PORT || 3000;
-
-// 6. Запускаємо сервер
-app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-});
-
+// 🧩 Викликаємо функцію
+startServer();

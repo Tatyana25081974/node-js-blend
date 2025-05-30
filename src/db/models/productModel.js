@@ -10,6 +10,12 @@ const productSchema = new mongoose.Schema({
     default: 'other',
   },
   description: { type: String }, // опціонально
+
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 }, {
   timestamps: true // створює createdAt і updatedAt автоматично
 });

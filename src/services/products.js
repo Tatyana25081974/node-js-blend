@@ -7,18 +7,22 @@ import { SORT_ORDER } from '../constants/index.js';
 
 
 
-export const getAllProducts = async ({
+export const getAllProducts = async({
   page = 1,             // номер сторінки (за замовчуванням 1)
   perPage = 10,         // скільки продуктів на сторінку (за замовчуванням 10)
   sortOrder = SORT_ORDER.ASC, // порядок сортування (ASC або DESC)
   sortBy = '_id',       // поле, за яким сортувати
-  filter = {},          // обʼєкт із фільтрами (наприклад: { category, minPrice, maxPrice })
+  filter = {},
+  userId,
 }) => {
   const limit = perPage;                  // скільки елементів показати
   const skip = (page - 1) * perPage;      // скільки елементів пропустити (наприклад, для 2-ї сторінки — 10)
 
+  
+ 
+
   // Створюємо запит без виконання (lazy query)
-  const productsQuery = Product.find();   // створює базовий запит на всі продукти
+  const productsQuery = Product.find({ userId });   // створює базовий запит на всі продукти
 
   // Додаємо фільтрацію до запиту, якщо є відповідні параметри
   if (filter.category) {
@@ -65,8 +69,8 @@ export const getAllProducts = async ({
   };
 };
 
-export const getProductById = async (productId) => {
-  const product = await Product.findById(productId); //пошук продукту за id
+export const getProductById = async (productId, userId) => {
+  const product = await Product.findOne({ _id: productId, userId });
 
   if (!product) {
     throw createHttpError(404, 'Product not found');
@@ -80,9 +84,9 @@ export const createProduct = async (data) => {
   return newProduct;
 };
 
-export const updateProductService = async (productId, updateData) => {
-  const updatedProduct = await Product.findByIdAndUpdate(
-    productId,
+export const updateProductService = async (productId, updateData, userId) => {
+  const updatedProduct = await Product.findOneAndUpdate(
+    { _id: productId, userId }, // перевірка, що продукт належить саме цьому користувачу
     updateData,
     { new: true, runValidators: true }
   );
@@ -94,9 +98,16 @@ export const updateProductService = async (productId, updateData) => {
   return updatedProduct;
 };
 
+export const deleteProduct = async (productId, userId) => {
+  const product = await Product.findOneAndDelete({
+    _id: productId,
+    userId, // 🔐 Перевірка приналежності продукту користувачу
+  });
 
+  if (!product) {
+    throw createHttpError(404, 'Product not found');
+  }
 
-export const deleteProduct = async (productId) => {
-  const product = await Product.findOneAndDelete({ _id: productId });
-  return product; // якщо null — контролер сам обробить
+  return product;
 };
+
