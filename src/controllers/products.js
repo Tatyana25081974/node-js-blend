@@ -2,8 +2,7 @@ import { getAllProducts, getProductById, createProduct, updateProductService, de
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-import { parseFilterParams } from '../utils/parseFilterParams.js';
-
+import { parseProductFilterParams } from '../utils/parseProductFilterParams.js';
 
 
 export const getProductsController = async (req, res, next) => {
@@ -11,14 +10,14 @@ export const getProductsController = async (req, res, next) => {
 
   const { sortBy, sortOrder } = parseSortParams(req.query);
 
-  const filter = parseFilterParams(req.query);
+  const filter = parseProductFilterParams(req.query);
 
   const products = await getAllProducts({
     page,
     perPage,
     sortBy,
     sortOrder,
-    filter,
+    ...filter,
   });
   res.json({
     status: 200,
