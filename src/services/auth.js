@@ -4,7 +4,11 @@ import createHttpError from 'http-errors'; // для створення HTTP-п�
 
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js'; // константи часу життя токенів
 import { SessionsCollection } from '../db/models/session.js'; // модель сесії
-import { UsersCollection } from '../db/models/user.js'; // модель користувача 
+import { UsersCollection } from '../db/models/user.js'; // модель користувача
+
+export const registerUser = async (payload) => {
+    return await UsersCollection.create(payload);
+  };
 
 export const loginUser = async (payload) => {
   // 1. Шукаємо користувача по email
