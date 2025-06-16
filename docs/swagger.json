@@ -2,34 +2,137 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "<назва вашого додатку>",
+    "title": "Products API",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "<опис вашого додатку>  # Загальний опис: що робить ваш API, для кого він, які основні можливості\n"
+    "description": "This API allows you to manage products — create, update, delete and view them. Includes authentication.\n"
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000",
+      "description": "Local development server"
     },
     {
-      "url": "https://node-js-blend.onrender.com"
+      "url": "https://node-js-blend.onrender.com",
+      "description": "Deployed server"
     }
   ],
   "tags": [
     {
-      "name": "Contacts",
+      "name": "Products",
       "description": "Operations with products"
     },
     {
       "name": "Auth",
-      "description": "Auth operation"
+      "description": "Authentication operations"
     }
   ],
   "paths": {
     "/products": {
       "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new product",
+        "operationId": "createProduct",
+        "description": "Create a product with name, price, category and photo",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "category",
+                  "photo"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Product's name",
+                    "type": "string",
+                    "example": "Red Shoes"
+                  },
+                  "price": {
+                    "description": "Product's price",
+                    "type": "number",
+                    "example": 99.99
+                  },
+                  "category": {
+                    "description": "Product's category",
+                    "type": "string",
+                    "enum": [
+                      "books",
+                      "electronics",
+                      "clothing",
+                      "other"
+                    ],
+                    "example": "clothing"
+                  },
+                  "description": {
+                    "description": "Optional description",
+                    "type": "string",
+                    "example": "Comfortable and stylish red shoes"
+                  },
+                  "photo": {
+                    "description": "Product's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Creates a new product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully created a product!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
         "tags": [
           "Products"
         ],
@@ -183,6 +286,153 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Update a product by ID",
+        "operationId": "updateProduct",
+        "description": "Partially update an existing product by ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "665f66b45d1ae5f3b894a314"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Updated product name"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 123.45
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "books",
+                      "electronics",
+                      "clothing",
+                      "other"
+                    ],
+                    "example": "books"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Updated description"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "example": "https://res.cloudinary.com/demo/image/upload/v1/product.jpg"
+                  }
+                },
+                "example": {
+                  "name": "New name",
+                  "price": 100,
+                  "category": "electronics"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully patched a product!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete product by id",
+        "operationId": "deleteProduct",
+        "description": "Deletes a product by ID if it belongs to the user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "665f66b45d1ae5f3b894a314"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product deleted successfully"
           },
           "401": {
             "$ref": "#/components/responses/401"
