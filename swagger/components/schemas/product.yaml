@@ -1,0 +1,64 @@
+type: object
+
+required: # Обов’язкові поля
+  - _id
+  - name
+  - price
+  - category
+  - userId
+  - email
+  - photo
+
+properties:
+  _id:
+    description: The ID of the product
+    type: string
+    example: 665f66b45d1ae5f3b894a314
+
+  name:
+    description: The name of the product
+    type: string
+    example: 'Apple iPhone 14'
+
+  price:
+    description: The price of the product
+    type: number
+    example: 999.99
+
+  category:
+    description: The category of the product
+    type: string
+    enum: [books, electronics, clothing, other]
+    example: electronics
+
+  description:
+    description: Description of the product
+    type: string
+    example: 'Newest model with A15 Bionic chip'
+
+  email:
+    description: The email of the user who owns the product
+    type: string
+    example: user@example.com
+
+  photo:
+    description: The URL of the product photo
+    type: string
+    example: 'https://res.cloudinary.com/demo/image/upload/v1718123456/product.jpg'
+
+  userId:
+    description: The ID of the user who owns the product
+    type: string
+    example: 665f6e7ad1ae5f3b894a314
+
+  createdAt:
+    description: When the product was created
+    type: string
+    format: date-time
+    example: '2025-06-15T12:00:00.000Z'
+
+  updatedAt:
+    description: When the product was last updated
+    type: string
+    format: date-time
+    example: '2025-06-15T12:30:00.000Z'

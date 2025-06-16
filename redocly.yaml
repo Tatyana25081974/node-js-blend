@@ -1,0 +1,19 @@
+# See <https://redocly.com/docs/cli/configuration/> for more information.
+# Посилання на офіційну документацію Redocly CLI
+
+apis:
+  sample@v1: # Назва API (sample) та його версія (v1)
+    root: docs/openapi.yaml # Основний YAML-файл з OpenAPI-специфікацією
+
+extends:
+  - recommended # Наслідування рекомендованої базової конфігурації (включає перевірки та шаблони)
+
+rules:
+  no-unused-components: error # Вимога: всі компоненти (schemas, responses тощо) мають використовуватись, інакше помилка
+
+theme:
+  htmlTemplate: ./docs/index.html # Користувацький HTML-шаблон для Redoc (як виглядатиме сайт документації)
+  colors:
+    primary:
+      main: '#32329f' # Основний колір (наприклад, кнопки, заголовки)
+

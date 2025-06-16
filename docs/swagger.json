@@ -1,0 +1,413 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "<назва вашого додатку>",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "<опис вашого додатку>  # Загальний опис: що робить ваш API, для кого він, які основні можливості\n"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://node-js-blend.onrender.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Contacts",
+      "description": "Operations with products"
+    },
+    {
+      "name": "Auth",
+      "description": "Auth operation"
+    }
+  ],
+  "paths": {
+    "/products": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new product",
+        "operationId": "createProduct",
+        "description": "Create a product with name, price, category and photo",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "category",
+                  "photo"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Product's name",
+                    "type": "string",
+                    "example": "Red Shoes"
+                  },
+                  "price": {
+                    "description": "Product's price",
+                    "type": "number",
+                    "example": 99.99
+                  },
+                  "category": {
+                    "description": "Product's category",
+                    "type": "string",
+                    "enum": [
+                      "books",
+                      "electronics",
+                      "clothing",
+                      "other"
+                    ],
+                    "example": "clothing"
+                  },
+                  "description": {
+                    "description": "Optional description",
+                    "type": "string",
+                    "example": "Comfortable and stylish red shoes"
+                  },
+                  "photo": {
+                    "description": "Product's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Creates a new product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully created a product!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get product by id",
+        "operationId": "getProduct",
+        "description": "Get product by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "665f66b45d1ae5f3b894a314"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get product by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found product with id 665f66b45d1ae5f3b894a314!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "product": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "price",
+          "category",
+          "userId",
+          "email",
+          "photo"
+        ],
+        "properties": {
+          "_id": {
+            "description": "The ID of the product",
+            "type": "string",
+            "example": "665f66b45d1ae5f3b894a314"
+          },
+          "name": {
+            "description": "The name of the product",
+            "type": "string",
+            "example": "Apple iPhone 14"
+          },
+          "price": {
+            "description": "The price of the product",
+            "type": "number",
+            "example": 999.99
+          },
+          "category": {
+            "description": "The category of the product",
+            "type": "string",
+            "enum": [
+              "books",
+              "electronics",
+              "clothing",
+              "other"
+            ],
+            "example": "electronics"
+          },
+          "description": {
+            "description": "Description of the product",
+            "type": "string",
+            "example": "Newest model with A15 Bionic chip"
+          },
+          "email": {
+            "description": "The email of the user who owns the product",
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "photo": {
+            "description": "The URL of the product photo",
+            "type": "string",
+            "example": "https://res.cloudinary.com/demo/image/upload/v1718123456/product.jpg"
+          },
+          "userId": {
+            "description": "The ID of the user who owns the product",
+            "type": "string",
+            "example": "665f6e7ad1ae5f3b894a314"
+          },
+          "createdAt": {
+            "description": "When the product was created",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-06-15T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "description": "When the product was last updated",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-06-15T12:30:00.000Z"
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad request - validation failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "BadRequestError"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Contact not found"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "error"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong on the server"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

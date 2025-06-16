@@ -1,0 +1,29 @@
+tags:
+  - Products # Група — Products
+
+summary: Delete product by id # Коротко: що робить
+
+operationId: deleteProduct # Унікальний ID
+
+description: Deletes a product by ID if it belongs to the user # Детально
+
+security:
+  - bearerAuth: [] # Потрібен авторизаційний токен
+
+parameters:
+  - in: path
+    name: productId
+    required: true
+    schema:
+      type: string
+      example: 665f66b45d1ae5f3b894a314
+
+responses:
+  '204':
+    description: Product deleted successfully
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

@@ -1,0 +1,75 @@
+tags:
+  - Products # Група в документації
+
+summary: Create a new product # Короткий опис
+
+operationId: createProduct # Унікальний ID операції
+
+description: 'Create a product with name, price, category and photo'
+
+security:
+  - bearerAuth: [] # Потрібен токен авторизації
+
+requestBody: # Опис тіла запиту
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - price
+          - category
+          - photo
+        properties:
+          name:
+            description: "Product's name"
+            type: string
+            example: 'Red Shoes'
+          price:
+            description: "Product's price"
+            type: number
+            example: 99.99
+          category:
+            description: "Product's category"
+            type: string
+            enum: [books, electronics, clothing, other]
+            example: clothing
+          description:
+            description: 'Optional description'
+            type: string
+            example: Comfortable and stylish red shoes
+          photo:
+            description: "Product's photo"
+            type: string
+            format: binary
+
+responses:
+  '201':
+    description: Creates a new product
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a product!
+            data:
+              $ref: '../../components/schemas/product.yaml'
+
+  '401':
+    $ref: '../../components/responses/401.yaml'
+
+  '400':
+    $ref: '../../components/responses/400.yaml'
+
+  '500':
+    $ref: '../../components/responses/500.yaml'

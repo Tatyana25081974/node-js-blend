@@ -1,0 +1,49 @@
+tags:
+  - Products # Назва групи (тега), до якої належить цей ендпоінт
+
+summary: Get product by id # Короткий опис — що робить цей запит
+
+operationId: getProduct # Унікальний ідентифікатор операції (використовується у генерації коду або для посилань)
+
+description: 'Get product by id' # Більш розгорнутий опис — для чого цей ендпоінт
+
+security:
+  - bearerAuth: [] # Вказує, що для цього запиту потрібна авторизація (Bearer Token)
+
+parameters:
+  - in: path # Тип параметра — із шляху (наприклад, /products/{productId})
+    name: productId # Назва параметра (має збігатися з тим, що у шляху)
+    required: true # Цей параметр обов'язковий
+    schema:
+      type: string # Тип значення — рядок
+      example: '665f66b45d1ae5f3b894a314' # Приклад значення productId
+
+responses:
+  '200': # Відповідь при успішному виконанні
+    description: 'Get product by id' # Опис відповіді
+    content:
+      application/json: # Тип відповіді — JSON
+        schema:
+          type: object # Тип кореневого об'єкта відповіді
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer # Статус-код (наприклад, 200)
+              example: 200
+            message:
+              type: string # Повідомлення успішної відповіді
+              example: Successfully found product with id 665f66b45d1ae5f3b894a314!
+            data:
+              $ref: '../../../components/schemas/product.yaml' # Посилання на схему об'єкта Product
+
+  '401': # Якщо неавторизований користувач
+    $ref: '../../../components/responses/401.yaml'
+
+  '404': # Якщо продукт з таким ID не знайдено
+    $ref: '../../../components/responses/404.yaml'
+
+  '500': # Внутрішня помилка сервера
+    $ref: '../../../components/responses/500.yaml'

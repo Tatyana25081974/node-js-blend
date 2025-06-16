@@ -8,20 +8,35 @@ import cookieParser from 'cookie-parser'; // для роботи з куками
 import router from './routers/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import { UPLOAD_DIR } from './constants/index.js'; 
 
 // 🔁 Створюємо функцію запуску сервера
 export const startServer = () => {
-  const app = express();
+  const app = express(); // Створення екземпляру додатку
 
-  // 📦 Middleware
-  app.use(express.json()); // для роботи з JSON
-  app.use(cors()); // дозвіл на запити з інших доменів
-  app.use(cookieParser()); // дозволяє читати та записувати куки
+  // 📦 Підключення middleware
 
+  // Роздача завантажених файлів (наприклад: фото)
+  app.use('/uploads', express.static(UPLOAD_DIR));
+
+  // Swagger документація буде доступна на /api-docs
+  app.use('/api-docs', swaggerDocs());
+
+  // Дозвіл обробляти JSON тіла запитів
+  app.use(express.json());
+
+  // Дозвіл на запити з інших джерел (localhost:5173 тощо)
+  app.use(cors());
+
+  // Працюємо з куками
+  app.use(cookieParser());
+
+  // Логування запитів у консоль
   app.use(
     pino({
       transport: {
-        target: 'pino-pretty',
+        target: 'pino-pretty', // робить лог читаємим
       },
     }),
   );

@@ -1,0 +1,94 @@
+tags:
+  - Products
+
+summary: Get all products with pagination, sorting and filtering
+
+operationId: getAllProducts
+
+description: >
+  Returns a list of products with support for pagination, sorting, and category filtering.
+
+security:
+  - bearerAuth: []
+
+parameters:
+  - in: query
+    name: page
+    schema:
+      type: integer
+      example: 1
+    description: Page number (pagination)
+
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      example: 10
+    description: Items per page
+
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      enum: [name, price, createdAt]
+      example: price
+    description: Field to sort by
+
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: [asc, desc]
+      example: asc
+    description: Sorting order
+
+  - in: query
+    name: category
+    schema:
+      type: string
+      example: books
+    description: Filter by category
+
+responses:
+  '200':
+    description: List of products
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully fetched products!
+            data:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: '../../../components/schemas/product.yaml'
+                page:
+                  type: integer
+                  example: 1
+                perPage:
+                  type: integer
+                  example: 10
+                totalItems:
+                  type: integer
+                  example: 50
+                totalPages:
+                  type: integer
+                  example: 5
+
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+
+  '500':
+    $ref: '../../../components/responses/500.yaml'

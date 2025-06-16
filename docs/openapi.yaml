@@ -1,0 +1,43 @@
+openapi: 3.1.0
+
+info:
+  version: 1.0.0
+  title: Products API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: >
+    This API allows you to manage products — create, update, delete and view them. Includes authentication.
+
+tags:
+  - name: Products
+    description: Operations with products
+  - name: Auth
+    description: Authentication operations
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://node-js-blend.onrender.com
+    description: Deployed server
+
+paths:
+  /products:
+    post:
+      $ref: ../swagger/paths/products/post.yaml
+    get:
+      $ref: ../swagger/paths/products/post.yaml
+
+  /products/{productId}:
+    get:
+      $ref: ../swagger/paths/products/{productId}/get.yaml
+    patch:
+      $ref: ../swagger/paths/products/{productId}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/products/{productId}/delete.yaml
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

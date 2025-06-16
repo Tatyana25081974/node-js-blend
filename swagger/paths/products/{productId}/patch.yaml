@@ -1,0 +1,78 @@
+tags:
+  - Product # Група для навігації
+summary: Update a product by ID # Короткий опис
+operationId: updateProduct # Унікальний ідентифікатор операції
+
+description: Partially update an existing product by ID.
+
+security:
+  - bearerAuth: [] # Потрібен Bearer токен
+
+parameters: #опис параметра :productId у URL
+  - in: path
+    name: productId
+    required: true
+    schema:
+      type: string
+      example: 665f66b45d1ae5f3b894a314
+
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Updated product name
+          price:
+            type: number
+            example: 123.45
+          category:
+            type: string
+            enum: [books, electronics, clothing, other]
+            example: books
+          description:
+            type: string
+            example: Updated description
+          photo:
+            type: string
+            example: https://res.cloudinary.com/demo/image/upload/v1/product.jpg
+        example:
+          name: New name
+          price: 100
+          category: electronics
+
+responses:
+  '200':
+    description: Product updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully patched a product!
+            data:
+              $ref: '../../../components/schemas/product.yaml'
+
+  '400': #нічого не передано в req.body
+    $ref: '../../../components/responses/400.yaml'
+
+  '401': #якщо немає токена (Bearer):
+    $ref: '../../../components/responses/401.yaml'
+
+  '404': #продукт не належить користувачу або не знайдено:
+    $ref: '../../../components/responses/404.yaml'
+
+  '500': # серверна помилка:
+    $ref: '../../../components/responses/500.yaml'
