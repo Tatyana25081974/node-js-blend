@@ -300,7 +300,7 @@
       },
       "patch": {
         "tags": [
-          "Product"
+          "Products"
         ],
         "summary": "Update a product by ID",
         "operationId": "updateProduct",

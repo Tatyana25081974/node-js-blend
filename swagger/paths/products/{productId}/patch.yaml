@@ -1,5 +1,5 @@
 tags:
-  - Product # Група для навігації
+  - Products # Група для навігації
 summary: Update a product by ID # Короткий опис
 operationId: updateProduct # Унікальний ідентифікатор операції
 
